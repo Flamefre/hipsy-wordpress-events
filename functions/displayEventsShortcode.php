@@ -27,12 +27,12 @@ function hipsy_events_shortcode($atts)
             $url = get_permalink();
             $location = get_post_meta(get_the_ID(), 'hipsy_events_location', true);
             // Date
-            $dateformat = get_option('date_format');
-	        $timeformat = get_option('time_format');
+        	$dateformat = get_option('date_format');
+		$timeformat = get_option('time_format');
             
            	$formatted_date     = wp_date($dateformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
          	$formatted_time     = wp_date($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
-			$formatted_time_end = wp_date($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date_end', true)));
+		$formatted_time_end = wp_date($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date_end', true)));
 
             $thumbnail = get_the_post_thumbnail(get_the_ID(), 'medium', array('class' => 'event-image'));
 
