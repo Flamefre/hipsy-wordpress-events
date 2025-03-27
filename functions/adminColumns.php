@@ -11,9 +11,11 @@ add_filter('manage_events_posts_columns', 'hipsy_events_add_date_column');
 function hipsy_events_render_date_column($column_name, $post_id)
 {
     if ($column_name === 'hipsy_events_date') {
-        $event_date = get_post_meta($post_id, 'hipsy_events_date', true);
-        $date = new DateTime($event_date);
-        $formatted_date = $date->format('M jS, Y \a\t H:i');
+            // Date
+		$dateformat = get_option('date_format');
+		$timeformat = get_option('time_format');
+			
+        $formatted_date     = wp_date($dateformat." ".$timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
         echo $formatted_date;
     }
 }
