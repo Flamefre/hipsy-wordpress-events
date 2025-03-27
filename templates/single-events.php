@@ -28,13 +28,13 @@ $dark_mode = $value === "1" ? 'dark' : '';
             the_post();
 
             // Date
-            $date_str = get_post_meta(get_the_ID(), 'hipsy_events_date', true);
-            $date = new DateTime($date_str);
-            $formatted_date = $date->format('F j');
-            $formatted_time = $date->format('H:i');
-            $date_str2 = get_post_meta(get_the_ID(), 'hipsy_events_date_end', true);
-            $date_end = new DateTime($date_str2);
-            $formatted_time_end = $date_end->format('H:i');
+
+			$dateformat = get_option('date_format');
+			$timeformat = get_option('time_format');
+			
+           	$formatted_date     = date_i18n($dateformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
+         	$formatted_time     = date_i18n($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
+			$formatted_time_end = date_i18n($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date_end', true)));
 
             $url = get_post_meta(get_the_ID(), 'hipsy_events_link', true);
             // Remove trailing slash if present
