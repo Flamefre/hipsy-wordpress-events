@@ -12,12 +12,12 @@ function createEvent($event)
     $formatted_date = $stored_date->format('Y-m-d\TH:i');
     $formatted_date_until = $stored_date_until->format('Y-m-d\TH:i');
 
-
     $post_arr = array(
         'post_title'   => $event['title'],
         'post_type'    => 'events',
         'post_content' => $event['description'],
         'post_status'  => 'publish',
+		'post_category' => $event['categories'],
         'meta_input'   => array(
             'hipsy_events_location' => $event['location'],
             'hipsy_events_date' => $formatted_date,
@@ -25,15 +25,18 @@ function createEvent($event)
             'hipsy_events_link' => $event['url_ticketshop'],
             'hipsy_ticket_info' => serialize($event['tickets'])
         ),
+		
     );
     if (get_post($event['id'])) {
         $post_arr['ID'] = $event['id'];
         wp_update_post($post_arr);
+		wp_set_post_terms( $event['id'], $event['categories'], 'hipsy-categorie' );
         return;
     }
     $post_arr['import_id'] = $event['id'];
 
     $post = wp_insert_post($post_arr);
+	wp_set_post_terms( $event['id'], $event['categories'], 'hipsy-categorie' );
     $image = add_external_image_to_media_library($event['picture']);
     set_post_thumbnail($post, $image);
 }

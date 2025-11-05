@@ -47,7 +47,7 @@ function hipsy_events_settings_page()
                                     <select name="hipsy_events_button_link" id="hipsy_events_button_link">
                                         <option value="shop" <?php selected($value, 'shop'); ?>>Ticketshop</option>
                                         <option value="event" <?php selected($value, 'event'); ?>>Event page</option>
-                                        <option value="popup" disabled <?php selected($value, 'popup'); ?>>Popup</option>
+                                        <option value="popup" <?php selected($value, 'popup'); ?>>Popup</option>
                                     </select>
                                     <p class="description"><?php esc_html_e('Where should the ticket button link to?', 'hipsy-events'); ?></p>
                                 </td>

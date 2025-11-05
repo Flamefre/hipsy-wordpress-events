@@ -17,6 +17,10 @@
                 type: 'text',
                 default: '99',
             },
+			hipsyCategories: {
+				type: 'text',
+				default:'testveld'
+			},
             eventList: {
                 type: 'array',
                 default: [],

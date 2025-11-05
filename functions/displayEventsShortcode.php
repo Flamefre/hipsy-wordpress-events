@@ -4,7 +4,8 @@
 function hipsy_events_shortcode($atts)
 {
     $atts = shortcode_atts(array(
-        'limit' => -1
+        'limit' => -1,
+		'cat' => false,
     ), $atts);
 
     $args = array(
@@ -14,35 +15,59 @@ function hipsy_events_shortcode($atts)
         'orderby' => 'meta_value',
         'order' => 'ASC',
     );
+	
+	if($atts['cat']) {
+		$args['tax_query'] =
+        [
+            'taxonomy' => 'hipsy-categorie',
+            'terms' => explode(',', $atts['cat']),
+            'include_children' => false
+        ];
+	}
+	
     $value = get_option('hipsy_events_dark_mode');
     $dark_mode = $value === "1" ? 'dark' : '';
-
+	
+	$dateformat = get_option('date_format');
+	$timeformat = get_option('time_format');
+			
     $output = loop_wrapper_start($dark_mode);
     $events_query = new WP_Query($args);
-    if ($events_query->have_posts()) :
+	
+    if ($events_query->have_posts()){
+		
         while ($events_query->have_posts()) :
+		
             $events_query->the_post();
             $link = get_post_meta(get_the_ID(), 'hipsy_events_link', true);
             $title = get_the_title();
             $url = get_permalink();
-            $location = get_post_meta(get_the_ID(), 'hipsy_events_location', true);
-            // Date
-            $date_str = get_post_meta(get_the_ID(), 'hipsy_events_date', true);
-            $date = new DateTime($date_str);
-            $formatted_date = $date->format('F j');
-            $formatted_time = $date->format('H:i');
-            $date_str2 = get_post_meta(get_the_ID(), 'hipsy_events_date_end', true);
-            $date_end = new DateTime($date_str2);
-            $formatted_time_end = $date_end->format('H:i');
+		
+		$termlist = '';
+		$terms = get_the_terms( get_the_ID(), 'hipsy-categorie' );
+		if ( $terms && ! is_wp_error( $terms ) ) :     
+			$term_links = array();    
+			foreach ( $terms as $term ) {
+				$term_links[] = '<div class="wp-block-button"><a class="wp-block-button__link" href="' . esc_attr( get_term_link( $term->slug, 'hipsy-categorie' ) ) . '">' . __( $term->name ) . '</a></div>';
+			}
+			if(is_array($term_links)) $termlist = '<div class="wp-block-buttons small">'.join( ' ', $term_links ).'</div>';
+		endif;
+		// echo $termlist;
+		
+		//$location = get_post_meta(get_the_ID(), 'hipsy_events_location', true);
+		// Date
+			$formatted_date     = wp_date($dateformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
+         	$formatted_time     = wp_date($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date', true)));
+			$formatted_time_end = wp_date($timeformat, strtotime( get_post_meta(get_the_ID(), 'hipsy_events_date_end', true)));
 
-            $thumbnail = get_the_post_thumbnail(get_the_ID(), 'medium', array('class' => 'event-image'));
+		$thumbnail = get_the_post_thumbnail(get_the_ID(), 'medium', array('class' => 'event-image'));
 
-            $output .= loop_item($url, $thumbnail, $formatted_date, $formatted_time, $formatted_time_end, $title, $location);
+		$output .= loop_item($url, $thumbnail, $formatted_date, $formatted_time, $formatted_time_end, $title, $location, $termlist);
         endwhile;
-    endif;
+		//echo $output;
+	}
     wp_reset_postdata();
     $output .= loop_wrapper_end();
-
     return $output;
 }
 add_shortcode('hipsy_events', 'hipsy_events_shortcode');

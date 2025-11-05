@@ -31,6 +31,7 @@ function fetch($key, string $url)
     ));
 
     $response = curl_exec($curl);
+	//var_dump($response);
     curl_close($curl);
 
     $events = json_decode($response, true);
