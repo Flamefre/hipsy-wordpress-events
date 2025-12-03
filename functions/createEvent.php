@@ -2,16 +2,16 @@
 
 function createEvent($event)
 {
-    $timezone = new DateTimeZone(wp_timezone_string());
-    $stored_date = new DateTime($event['date']);
-    $stored_date->setTimezone($timezone);
+$hipsy_timezone = new DateTimezone("UTC"); // was 'Europe/Amsterdam'
+  $timezone = new DateTimeZone(wp_timezone_string());
+  $stored_date = new DateTime($event['date'], $hipsy_timezone);
+  // $stored_date->setTimezone($timezone);
 
-    $stored_date_until = new DateTime($event['date_until']);
-    $stored_date_until->setTimezone($timezone);
+  $stored_date_until = new DateTime($event['date_until'], $hipsy_timezone);
+  // $stored_date_until->setTimezone($timezone);
 
-    $formatted_date = $stored_date->format('Y-m-d\TH:i');
-    $formatted_date_until = $stored_date_until->format('Y-m-d\TH:i');
-
+  $formatted_date = $stored_date->format('Y-m-d\TH:i');
+  $formatted_date_until = $stored_date_until->format('Y-m-d\TH:i');
 
     $post_arr = array(
         'post_title'   => $event['title'],
